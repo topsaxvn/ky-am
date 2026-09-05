@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ký âm - Ghi nốt bài hát</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">🎹 Ký âm</div>
+    <div class="song-controls">
+      <input id="songTitle" type="text" placeholder="Tên bài hát..." value="Bài hát mới">
+      <select id="songSelect">
+        <option value="">-- Danh sách bài hát --</option>
+      </select>
+      <button id="btnNew" title="Tạo bài hát mới">+ Mới</button>
+      <button id="btnSave" title="Lưu bài hát">💾 Lưu</button>
+      <button id="btnDelete" title="Xoá bài hát">🗑 Xoá</button>
+      <button id="btnExport" title="Xuất file JSON">⬇ Xuất</button>
+      <label class="file-import" title="Nhập file JSON">⬆ Nhập<input id="fileImport" type="file"
+          accept="application/json" hidden></label>
+    </div>
+  </header>
+
+  <main>
+    <section class="lyrics-panel">
+
+      <div class="lyrics-body">
+        <div class="lyrics-column">
+          <div class="lyrics-header">
+            <h2>Lời bài hát</h2>
+            <div class="lyrics-actions">
+              <button id="btnToggleEdit">✏️ Sửa lời</button>
+              <button id="btnClearNotes">Xoá hết nốt đã gán</button>
+            </div>
+          </div>
+          <textarea id="lyricsEditor" placeholder="Dán lời bài hát vào đây, mỗi câu một dòng..." hidden></textarea>
+          <div id="lyricsView" class="lyrics-view"></div>
+          <p class="hint">Bấm vào một chữ để chọn, rồi bấm phím đàn để gán nốt cho chữ đó. Chữ tiếp theo sẽ tự được
+            chọn. Dùng phím mũi tên ← → để chuyển sang chữ trước/sau, ↑ ↓ để nhảy giữa các câu.</p>
+        </div>
+        <div class="fingering-list-panel" id="fingeringListPanel" hidden>
+          <h3>Các thế bấm dùng trong bài</h3>
+          <div id="fingeringListItems" class="fingering-list-items"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="piano-panel">
+      <div class="piano-settings-row">
+        <div class="control-group">
+          <label>Scale (Gam)</label>
+          <div class="control-row">
+            <select id="scaleRoot"></select>
+            <select id="scaleType"></select>
+          </div>
+        </div>
+        <div class="control-group">
+          <label>Nhạc cụ</label>
+          <select id="instrument"></select>
+        </div>
+        <div class="control-group">
+          <label>Tone gốc bài hát</label>
+          <div class="control-row tone-root-row">
+            <button id="transposeDown" title="Giảm 1 nửa cung">♭</button>
+            <select id="songKey"></select>
+            <button id="transposeUp" title="Tăng 1 nửa cung">♯</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <label>Tên nốt</label>
+          <select id="naming">
+            <option value="letter">Chữ (C, D, E...)</option>
+            <option value="solfege">Do Re Mi (Đô Rê Mi...)</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Âm lượng</label>
+          <input id="volume" type="range" min="0" max="1" step="0.01" value="0.6">
+        </div>
+      </div>
+      <div class="piano-toolbar">
+        <button id="octaveDown">Octave -</button>
+        <span id="baseOctaveLabel">Bàn phím máy tính: bát độ gốc C4</span>
+        <button id="octaveUp">Octave +</button>
+        <span class="active-word-indicator" id="activeWordIndicator"></span>
+      </div>
+      <div class="piano-scroll">
+        <div id="piano" class="piano"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="sax-fingerings.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
