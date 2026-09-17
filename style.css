@@ -140,6 +140,12 @@ section {
   padding: 6px 10px;
   font-weight: 700;
 }
+.temp-transpose-label {
+  min-width: 24px;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
 
 #lyricsEditor {
   width: 100%;

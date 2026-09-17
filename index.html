@@ -64,10 +64,23 @@
         </div>
         <div class="control-group">
           <label>Tone gốc bài hát</label>
-          <div class="control-row tone-root-row">
-            <button id="transposeDown" title="Giảm 1 nửa cung">♭</button>
+          <div class="control-row">
             <select id="songKey"></select>
-            <button id="transposeUp" title="Tăng 1 nửa cung">♯</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <label>Dịch giọng (đổi nốt, lưu lại)</label>
+          <div class="control-row tone-root-row">
+            <button id="transposeDown" title="Giáng thật 1 nửa cung (đổi nốt đã gán, có lưu)">♭</button>
+            <button id="transposeUp" title="Thăng thật 1 nửa cung (đổi nốt đã gán, có lưu)">♯</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <label>Thăng/giáng tạm thời (chỉ xem)</label>
+          <div class="control-row tone-root-row">
+            <button id="previewTransposeDown" title="Giáng tạm thời 1 nửa cung (chỉ hiển thị, không lưu)">♭</button>
+            <span id="tempTransposeLabel" class="temp-transpose-label">0</span>
+            <button id="previewTransposeUp" title="Thăng tạm thời 1 nửa cung (chỉ hiển thị, không lưu)">♯</button>
           </div>
         </div>
         <div class="control-group">

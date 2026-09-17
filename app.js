@@ -50,6 +50,7 @@ let state = {
 let activeWordRef = null; // {line, word}
 let baseOctaveNote = 60;  // C4, for computer-keyboard playing
 let audioCtx = null;
+let tempTransposeSemitones = 0; // display-only preview shift, never saved
 
 // ===================== Audio =====================
 
@@ -119,9 +120,9 @@ function transposeForInstrument(concertMidi, instrumentKey) {
   return concertMidi + inst.semitoneShift + 12 * inst.octaveShift;
 }
 
-function displayNoteForMidi(concertMidi) {
+function displayNoteForMidi(concertMidi, extraSemitones = 0) {
   if (concertMidi === null || concertMidi === undefined) return null;
-  const written = transposeForInstrument(concertMidi, state.instrument);
+  const written = transposeForInstrument(concertMidi + extraSemitones, state.instrument);
   return noteNameFromMidi(written, state.naming);
 }
 
@@ -229,17 +230,30 @@ function isRoot(midi) {
   return ((midi % 12) + 12) % 12 === state.scaleRoot;
 }
 
-// ===================== Transpose (change key) =====================
+// ===================== Transpose (change key, saved) =====================
 
 function transposeSong(semitones) {
   state.lines.forEach(line => line.forEach(w => {
     if (w.note !== null && w.note !== undefined) w.note += semitones;
   }));
   state.scaleRoot = ((state.scaleRoot + semitones) % 12 + 12) % 12;
-  state.songKey = ((state.songKey + semitones) % 12 + 12) % 12;
 
   populateSelects();
   renderAll();
+}
+
+// ===================== Temporary transpose (display only) =====================
+
+function adjustTempTranspose(delta) {
+  tempTransposeSemitones += delta;
+  updateTempTransposeLabel();
+  renderLyrics();
+}
+
+function updateTempTransposeLabel() {
+  const label = document.getElementById('tempTransposeLabel');
+  if (!label) return;
+  label.textContent = tempTransposeSemitones > 0 ? `+${tempTransposeSemitones}` : `${tempTransposeSemitones}`;
 }
 
 // ===================== Lyrics model =====================
@@ -380,7 +394,7 @@ function renderLyrics() {
       textEl.textContent = word.text;
 
       const noteEl = document.createElement('div');
-      const displayed = displayNoteForMidi(word.note);
+      const displayed = displayNoteForMidi(word.note, tempTransposeSemitones);
       noteEl.className = 'word-note' + (displayed ? '' : ' empty');
       noteEl.textContent = displayed || '·';
 
@@ -648,6 +662,8 @@ async function loadSong(id) {
     songKey: song.songKey || 0,
   };
   activeWordRef = null;
+  tempTransposeSemitones = 0;
+  updateTempTransposeLabel();
   document.getElementById('songTitle').value = state.title;
   document.getElementById('lyricsEditor').value = lyricsToText();
   populateSelects();
@@ -666,6 +682,8 @@ function newSong() {
     songKey: 0,
   };
   activeWordRef = null;
+  tempTransposeSemitones = 0;
+  updateTempTransposeLabel();
   document.getElementById('songTitle').value = state.title;
   document.getElementById('lyricsEditor').value = '';
   document.getElementById('songSelect').value = '';
@@ -750,12 +768,10 @@ async function initUI() {
 
   document.getElementById('transposeDown').addEventListener('click', () => transposeSong(-1));
   document.getElementById('transposeUp').addEventListener('click', () => transposeSong(1));
+  document.getElementById('previewTransposeDown').addEventListener('click', () => adjustTempTranspose(-1));
+  document.getElementById('previewTransposeUp').addEventListener('click', () => adjustTempTranspose(1));
   document.getElementById('songKey').addEventListener('change', e => {
-    const newKey = parseInt(e.target.value, 10);
-    let diff = newKey - state.songKey;
-    if (diff > 6) diff -= 12;
-    if (diff < -6) diff += 12;
-    if (diff !== 0) transposeSong(diff);
+    state.songKey = parseInt(e.target.value, 10);
   });
 
   document.getElementById('scaleRoot').addEventListener('change', e => {
