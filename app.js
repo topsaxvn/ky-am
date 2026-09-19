@@ -39,12 +39,14 @@ const MIDI_MAX = 84; // C6
 let state = {
   id: null,
   title: 'Bài hát mới',
+  singer: '',
   lines: [],           // [[{text, note: midiOrNull}]]
   scaleRoot: 0,
   scaleType: 'major',
   instrument: 'piano',
   naming: 'letter',
   songKey: 0,          // pitch class of the song's current/original key, persisted
+  published: false,    // shown on the public /view page when true
 };
 
 let activeWordRef = null; // {line, word}
@@ -566,12 +568,14 @@ function songToDbRow(song) {
   return {
     id: song.id,
     title: song.title,
+    singer: song.singer || '',
     lines: song.lines,
     scale_root: song.scaleRoot,
     scale_type: song.scaleType,
     instrument: song.instrument,
     naming: song.naming,
     song_key: song.songKey,
+    published: !!song.published,
     updated_at: new Date().toISOString(),
   };
 }
@@ -580,12 +584,14 @@ function dbRowToSong(row) {
   return {
     id: row.id,
     title: row.title,
+    singer: row.singer || '',
     lines: row.lines || [],
     scaleRoot: row.scale_root,
     scaleType: row.scale_type,
     instrument: row.instrument,
     naming: row.naming,
     songKey: row.song_key || 0,
+    published: !!row.published,
   };
 }
 
@@ -620,12 +626,14 @@ function serializeCurrentSong() {
   return {
     id: state.id || `song_${Date.now()}`,
     title: document.getElementById('songTitle').value || 'Bài hát mới',
+    singer: document.getElementById('songSinger').value.trim(),
     lines: state.lines,
     scaleRoot: state.scaleRoot,
     scaleType: state.scaleType,
     instrument: state.instrument,
     naming: state.naming,
     songKey: state.songKey,
+    published: state.published,
   };
 }
 
@@ -654,17 +662,21 @@ async function loadSong(id) {
   state = {
     id: song.id,
     title: song.title,
+    singer: song.singer || '',
     lines: song.lines,
     scaleRoot: song.scaleRoot,
     scaleType: song.scaleType,
     instrument: song.instrument,
     naming: song.naming,
     songKey: song.songKey || 0,
+    published: !!song.published,
   };
   activeWordRef = null;
   tempTransposeSemitones = 0;
   updateTempTransposeLabel();
   document.getElementById('songTitle').value = state.title;
+  document.getElementById('songSinger').value = state.singer;
+  document.getElementById('songStatus').value = state.published ? 'published' : 'draft';
   document.getElementById('lyricsEditor').value = lyricsToText();
   populateSelects();
   renderAll();
@@ -674,17 +686,21 @@ function newSong() {
   state = {
     id: null,
     title: 'Bài hát mới',
+    singer: '',
     lines: [],
     scaleRoot: 0,
     scaleType: 'major',
     instrument: 'piano',
     naming: 'letter',
     songKey: 0,
+    published: false,
   };
   activeWordRef = null;
   tempTransposeSemitones = 0;
   updateTempTransposeLabel();
   document.getElementById('songTitle').value = state.title;
+  document.getElementById('songSinger').value = '';
+  document.getElementById('songStatus').value = 'draft';
   document.getElementById('lyricsEditor').value = '';
   document.getElementById('songSelect').value = '';
   populateSelects();
@@ -720,6 +736,7 @@ function importSongFile(file) {
     try {
       const song = JSON.parse(reader.result);
       song.id = `song_${Date.now()}`;
+      song.published = false; // imported copies start as drafts
       const { error } = await supabaseClient.from('songs').upsert(songToDbRow(song));
       if (error) throw error;
       await refreshSongSelect();
@@ -770,6 +787,9 @@ async function initUI() {
   document.getElementById('transposeUp').addEventListener('click', () => transposeSong(1));
   document.getElementById('previewTransposeDown').addEventListener('click', () => adjustTempTranspose(-1));
   document.getElementById('previewTransposeUp').addEventListener('click', () => adjustTempTranspose(1));
+  document.getElementById('songStatus').addEventListener('change', e => {
+    state.published = e.target.value === 'published';
+  });
   document.getElementById('songKey').addEventListener('change', e => {
     state.songKey = parseInt(e.target.value, 10);
   });
@@ -828,6 +848,14 @@ async function initUI() {
       renderLyrics();
       scrollActiveWordIntoView();
       playActiveWordNote();
+      return;
+    }
+
+    if (key === 'delete') {
+      if (!activeWordRef) return;
+      e.preventDefault();
+      state.lines[activeWordRef.line][activeWordRef.word].note = null;
+      renderLyrics();
       return;
     }
 

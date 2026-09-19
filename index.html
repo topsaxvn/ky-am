@@ -13,6 +13,11 @@
     <div class="brand">🎹 Ký âm</div>
     <div class="song-controls">
       <input id="songTitle" type="text" placeholder="Tên bài hát..." value="Bài hát mới">
+      <input id="songSinger" type="text" placeholder="Ca sĩ...">
+      <select id="songStatus" title="Trạng thái xuất bản (hiện trên trang /view khi là Đã xuất bản)">
+        <option value="draft">📝 Nháp</option>
+        <option value="published">🌐 Đã xuất bản</option>
+      </select>
       <select id="songSelect">
         <option value="">-- Danh sách bài hát --</option>
       </select>
@@ -22,6 +27,7 @@
       <button id="btnExport" title="Xuất file JSON">⬇ Xuất</button>
       <label class="file-import" title="Nhập file JSON">⬆ Nhập<input id="fileImport" type="file"
           accept="application/json" hidden></label>
+      <a class="view-link" href="view/" target="_blank" title="Mở trang xem ký âm đã xuất bản">👁 Trang xem</a>
     </div>
   </header>
 

@@ -14,6 +14,13 @@ create table if not exists public.songs (
   updated_at timestamptz not null default now()
 );
 
+-- Publish status: only songs with published = true are listed on the /view page.
+-- (Safe to run on an existing table; existing songs stay drafts.)
+alter table public.songs add column if not exists published boolean not null default false;
+
+-- Singer name, searchable on the /view page.
+alter table public.songs add column if not exists singer text not null default '';
+
 alter table public.songs enable row level security;
 
 -- No login/auth in this app yet, so allow the public (anon) key full access.

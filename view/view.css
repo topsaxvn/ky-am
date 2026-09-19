@@ -1,0 +1,149 @@
+a.brand {
+  color: inherit;
+  text-decoration: none;
+}
+
+.view-main {
+  max-width: 900px;
+}
+
+.status-msg {
+  color: var(--text-dim);
+  text-align: center;
+  margin: 40px 0;
+}
+
+.back-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Song list ---------- */
+
+.list-title,
+.song-head h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.list-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  align-items: flex-end;
+}
+
+.list-filters .control-group:first-child {
+  flex: 1;
+  min-width: 220px;
+}
+
+.list-filters select {
+  min-width: 140px;
+}
+
+.singer {
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.song-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.song-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.song-card:hover {
+  border-color: var(--accent);
+  background: var(--panel-2);
+}
+
+.song-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.song-card .preview {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.song-card .meta,
+.song-meta {
+  color: var(--accent-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ---------- Song detail ---------- */
+
+.song-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.view-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-end;
+}
+
+.view-controls select {
+  min-width: 180px;
+}
+
+.view-lyrics .lyric-word {
+  cursor: default;
+}
+
+.view-lyrics .lyric-word:hover {
+  background: none;
+}
+
+.view-lyrics .word-text {
+  font-size: 1.15rem;
+}
+
+.view-lyrics .word-note {
+  font-size: 0.85rem;
+}
+
+.fingering-section h2 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  color: var(--text-dim);
+}
+
+.fingering-section[hidden] {
+  display: none;
+}
+
+.fingering-section .fingering-list-item,
+.fingering-section .fingering-list-item:hover {
+  cursor: default;
+  background: none;
+  border-color: transparent;
+}

@@ -80,9 +80,25 @@ button:hover {
   max-width: 320px;
 }
 
+#songSinger {
+  min-width: 140px;
+  max-width: 200px;
+}
+
 .file-import {
   display: inline-block;
   cursor: pointer;
+}
+
+.view-link {
+  margin-left: auto;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.view-link:hover {
+  text-decoration: underline;
 }
 
 main {
